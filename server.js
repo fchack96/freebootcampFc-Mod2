@@ -16,7 +16,7 @@ app.set("views", "./views/pug");
 
 // Ruta de inicio
 app.route('/').get((req, res) => {
-    res.render('index', {
+    res.render('pug', {
         title: 'Hello',
         message: 'Please log in'
     });
