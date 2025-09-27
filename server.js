@@ -1,29 +1,32 @@
 'use strict';
-require('dotenv').config(); // Para leer las variables de entorno
+require('dotenv').config();
 const express = require('express');
+const myDB = require('./connection');
 const fccTesting = require('./freeCodeCamp/fcctesting.js');
 
 const app = express();
 
+// CORS abierto para el tester de freeCodeCamp
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+
 fccTesting(app); // For FCC testing purposes
+
+app.set('view engine', 'pug');
+app.set('views', './views/pug');
+
 app.use('/public', express.static(process.cwd() + '/public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Configuración de motor de plantillas Pug
-app.set('view engine', 'pug');
-app.set("views", "./views/pug");
-
-// Ruta de inicio
-app.route('/').get((req, res) => {
-    res.render('pug', {
-        title: 'Hello',
-        message: 'Please log in'
-    });
+app.get('/', (req, res) => {
+  res.render('index'); // renderiza views/pug/index.pug
 });
 
-// Usar el puerto desde .env o 3000 por defecto
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log('Listening on port ' + PORT);
+app.listen(PORT, () => {
+  console.log('Listening on port ' + PORT);
 });
